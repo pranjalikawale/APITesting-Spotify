@@ -35,6 +35,22 @@ class TestSpotify():
         assert user_id == 'y4qylmcub7wbtqwg9pqyyz652' and response.status_code == 200
         print(user_id)
 
+    def test_get_user_name(self,spotify_token):
+        url = 'https://api.spotify.com/v1/me'
+
+        headers = {
+            'authorization': spotify_token ,
+            'cache-control': 'no-cache',
+            'Content-Type':'application/json'
+        }
+
+        response = requests.get( url, headers=headers)
+        # Validate response headers and body contents, e.g. status code.
+        response_body=response.json()
+        user_name=response_body['display_name']
+        assert user_name == "Pranjali Kawale" and response.status_code == 200
+        print(user_name)
+        
     def test_get_current_user_check_status_code_equals_401(self):
         url = 'https://api.spotify.com/v1'
 
