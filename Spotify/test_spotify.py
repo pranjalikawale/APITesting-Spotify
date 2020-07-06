@@ -12,7 +12,7 @@ class TestSpotify():
 
     @pytest.fixture
     def spotify_token(self):
-        token='Bearer BQBMUBq73M4Jt_m6CFxTLu3mQDotKlR2I6C-cgz3F13rsWFWNjgPW3tOhEn02bMfKqvr2yY2Z40c26wMNwrn3hB1rv8ox566fF1MMt0JAPGA-ODN9KaqY1c-kh4-b5-F_6SX66oXGEAofL8qkGScHtuIO5asaOM5kbrms2qO1joln4e9lQy2-AIkqROiGaHKhXdUBw50yxxTH99WHHa5ADHTOU68SFXtG-VBUIOyukmOOAER_QiskVTvrCGON7arRc65RVvkNjaZuJoiYa5kYS31x5X5cvCI'
+        token='Bearer BQCSNJW2PER69kf8vCKqKdII9i-MO_IyknLKuMWIW5YS_oHkmv2H14CvS4UHZ8jL8M0x0l7PoZ5-20T6hYXezqDqzyAZWfdMUb-fjVdIReok5D1b1NbgjhLL4-v5YluA3d1wJrzcvCwTklxxlZIiOKtnItt_b0akLoR_pvP7yvVi9HyRkUxYDzzeRfNm3y_2BqPwFRzhiJUpz-OgZKl7MIEUBBxViSkF9U1KQgN_7uo8LeQO3NAoO8PlpqvCCpyJKV5nEAx1bUJoLE6pM8IGh8wY6TkACHZ4'
         headers = {
             'authorization': token ,
             'cache-control': 'no-cache',
@@ -68,7 +68,7 @@ class TestSpotify():
         assert response.status_code == 401
 
     def test_create_playlist(self,spotify_token):
-        global user_id,user_name
+        global user_id
         url = 'https://api.spotify.com/v1/users/' + user_id + '/playlists'
         payload = {'name': 'Pranjali', 'description': 'New playlist description','public': True}
 
@@ -78,6 +78,16 @@ class TestSpotify():
         assert response_body['name'] == 'Pranjali' and response.status_code == 201
         print(json.dumps(response_body))    
 
+    def test_get_user_playlist_info(self,spotify_token):
+        global user_id,total_playlist
+        url = 'https://api.spotify.com/v1/users/' + user_id + '/playlists'
+
+        response = requests.get( url, headers=spotify_token)
+        # Validate response headers and body contents, e.g. status code.
+        response_body=response.json()
+        total_playlist=response_body['total']
+        assert response.status_code == 200
+        print(json.dumps(response_body)) 
         
 
 
