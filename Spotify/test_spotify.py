@@ -12,7 +12,7 @@ class TestSpotify():
 
     @pytest.fixture
     def spotify_token(self):
-        token='Bearer BQCSNJW2PER69kf8vCKqKdII9i-MO_IyknLKuMWIW5YS_oHkmv2H14CvS4UHZ8jL8M0x0l7PoZ5-20T6hYXezqDqzyAZWfdMUb-fjVdIReok5D1b1NbgjhLL4-v5YluA3d1wJrzcvCwTklxxlZIiOKtnItt_b0akLoR_pvP7yvVi9HyRkUxYDzzeRfNm3y_2BqPwFRzhiJUpz-OgZKl7MIEUBBxViSkF9U1KQgN_7uo8LeQO3NAoO8PlpqvCCpyJKV5nEAx1bUJoLE6pM8IGh8wY6TkACHZ4'
+        token='Bearer BQBSQDVBoTGBKTxj0tcNys380EU91c26EisYkiRwm2Y1PTy0S3SGlkTgywYTffzyk_aS8P19Xz0NkcrH8wr4drd4rfcE4JZazIqQvWXkDB3dI2SRutFiiI0LuDTJD4VoKwjRNOidZu28wSz8-ITCRPhGVkmqO17YIalCC_EUZc--NZFxMyYyl_pRAqRmotN72TleCok5Ot7uW3wL6TF3ZFo__LszFEu8CN5kY-8Pjo2Yau_sXmSd40liqmJo9gpBQQkNdA9IRHVuP6AKIswm9mwrpsdBAR_a'
         headers = {
             'authorization': token ,
             'cache-control': 'no-cache',
@@ -66,7 +66,7 @@ class TestSpotify():
         response = requests.get( url, headers=headers)
         # Validate response headers and body contents, e.g. status code.
         assert response.status_code == 401
-
+    
     def test_create_playlist(self,spotify_token):
         global user_id
         url = 'https://api.spotify.com/v1/users/' + user_id + '/playlists'
@@ -77,7 +77,7 @@ class TestSpotify():
         response_body=response.json()
         assert response_body['name'] == 'Pranjali' and response.status_code == 201
         print(json.dumps(response_body))    
-
+    
     def test_get_user_playlist_info(self,spotify_token):
         global user_id,total_playlist
         url = 'https://api.spotify.com/v1/users/' + user_id + '/playlists'
@@ -87,8 +87,25 @@ class TestSpotify():
         response_body=response.json()
         total_playlist=response_body['total']
         assert response.status_code == 200
+        print(total_playlist)
         print(json.dumps(response_body)) 
-        
+
+    def test_get_user_playlist(self,spotify_token):
+        global user_id,total_playlist
+        url = 'https://api.spotify.com/v1/users/' + user_id + '/playlists'
+
+        response = requests.get( url, headers=spotify_token)
+        # Validate response headers and body contents, e.g. status code.
+        response_body=response.json()
+        total_playlist=response_body['total']
+        playlists =[total_playlist]
+        for counter in range(total_playlist,1):
+            playlists[counter] = response_body['items[' + counter + '].id'] #get playlist id
+        assert response.status_code == 200
+        for id in playlists:
+            print("PlayList Id" + str(id))
+        print(json.dumps(response_body))    
+
 
 
     
