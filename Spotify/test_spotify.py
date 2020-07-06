@@ -3,16 +3,16 @@ import json
 import pytest
 
 class TestSpotify():
-    token=""
+    token=''
     playlists=[]
     total_playlist=0
     track_id=[]
-    user_id = ""
+    user_id = ''
     JSON = "application/json"
 
     @pytest.fixture
     def spotify_token(self):
-        token='Bearer BQChPQOx6YvcnUD9EWIwQIlNctTa9jAcF8hVpxo24CMB73x6DBa-IsWYO_CC7vId4WeyNQtcnGZpO_JkQHZVvgbxjfr1ZOD6Y19elLDideYURmwGvvvYqZITlzNGuQwEnVI1ulm_50tKTKbVtEGMscQApsbRHS5l5YhpjI_SIxxLr2AVyzxxN5Y8QN4GDpE9-eFT1S3UBDypvPOYtOD1NhUg-AP4yKJE6QMsdQ1ePBklZ0LboHVT3BhBtbKpPE9NwXxhWAVLl4DZzK_NKWuVf9qZoohBvAI3'
+        token='Bearer BQBMUBq73M4Jt_m6CFxTLu3mQDotKlR2I6C-cgz3F13rsWFWNjgPW3tOhEn02bMfKqvr2yY2Z40c26wMNwrn3hB1rv8ox566fF1MMt0JAPGA-ODN9KaqY1c-kh4-b5-F_6SX66oXGEAofL8qkGScHtuIO5asaOM5kbrms2qO1joln4e9lQy2-AIkqROiGaHKhXdUBw50yxxTH99WHHa5ADHTOU68SFXtG-VBUIOyukmOOAER_QiskVTvrCGON7arRc65RVvkNjaZuJoiYa5kYS31x5X5cvCI'
         return token
 
     def test_given_valid_url_check_status_code_equals_200(self):
@@ -31,6 +31,7 @@ class TestSpotify():
         response = requests.get( url, headers=headers)
         # Validate response headers and body contents, e.g. status code.
         response_body=response.json()
+        global user_id
         user_id=response_body['id']
         assert user_id == 'y4qylmcub7wbtqwg9pqyyz652' and response.status_code == 200
         print(user_id)
@@ -50,7 +51,24 @@ class TestSpotify():
         user_name=response_body['display_name']
         assert user_name == "Pranjali Kawale" and response.status_code == 200
         print(user_name)
-        
+
+    def test_get_user_profile(self,spotify_token):
+        global user_id
+        url = 'https://api.spotify.com/v1/users/'+user_id+'/'
+
+        headers = {
+            'authorization': spotify_token ,
+            'cache-control': 'no-cache',
+            'Content-Type':'application/json'
+        }
+
+        response = requests.get( url, headers=headers)
+        # Validate response headers and body contents, e.g. status code.
+        response_body=response.json()
+        assert response.status_code == 200
+        print(json.dumps(response_body))
+       
+
     def test_get_current_user_check_status_code_equals_401(self):
         url = 'https://api.spotify.com/v1'
 
